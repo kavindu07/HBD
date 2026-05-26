@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Birthday Countdown</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div id="phase-countdown" class="page page-countdown">
+    <div class="content">
+      <h1>Just for you</h1>
+      <p class="subtitle">Countdown to some special thing</p>
+      <div class="countdown" id="countdown">
+        <div><span id="days">00</span><small>Days</small></div>
+        <div><span id="hours">00</span><small>Hours</small></div>
+        <div><span id="minutes">00</span><small>Minutes</small></div>
+        <div><span id="seconds">00</span><small>Seconds</small></div>
+      </div>
+      <button class="skip-button" id="skip-button" type="button">Skip to terminal</button>
+      <p class="hint">When the clock hits midnight, the encrypted terminal will appear.</p>
+    </div>
+  </div>
+
+  <div id="heart-rain" class="heart-overlay hidden" aria-hidden="true"></div>
+
+  <div id="phase-terminal" class="phase-terminal hidden" aria-live="polite">
+    <div class="terminal-shell">
+      <div class="terminal-header">
+        <span class="terminal-dot terminal-dot-red"></span>
+        <span class="terminal-dot terminal-dot-yellow"></span>
+        <span class="terminal-dot terminal-dot-green"></span>
+      </div>
+
+      <div class="terminal-content">
+        <div id="terminal-output" class="terminal-output"></div>
+        <div id="terminal-input-row" class="terminal-input-row hidden">
+          <span class="terminal-prompt">> </span>
+          <input id="terminal-input" class="terminal-input" autocomplete="off" spellcheck="false" />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
