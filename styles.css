@@ -486,6 +486,20 @@ h1 {
   gap: 0.6rem;
 }
 
+.terminal-prompt-line {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+}
+
+.terminal-prompt-text {
+  flex: 0 0 auto;
+}
+
+.terminal-prompt-line .terminal-input-row {
+  flex: 1 1 15rem;
+}
+
 .terminal-prompt {
   color: var(--terminal-glow);
   font-family: 'Courier New', Courier, monospace;
@@ -570,6 +584,12 @@ h1 {
 @media (max-width: 520px) {
   .terminal-shell {
     padding: 1rem;
+  }
+
+  .terminal-prompt-line {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 0.45rem;
   }
 
   .terminal-input-row {

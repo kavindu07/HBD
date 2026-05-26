@@ -168,10 +168,21 @@ async function typeLine(text, speed = 35, className = 'terminal-info') {
 
 function showInputPrompt() {
   const step = terminalSteps[currentStep];
-  appendTerminalLine(`${step.prompt} `, 'terminal-info');
+  const promptLine = document.createElement('div');
+  const promptText = document.createElement('span');
+
+  promptLine.className = 'terminal-line terminal-prompt-line terminal-info';
+  promptText.className = 'terminal-prompt-text';
+  promptText.textContent = step.prompt;
+
+  promptLine.appendChild(promptText);
+  promptLine.appendChild(terminalInputRow);
+  terminalOutput.appendChild(promptLine);
+
   terminalInput.value = '';
   terminalInput.placeholder = 'Type your answer and press Enter';
   terminalInputRow.classList.remove('hidden');
+  terminalOutput.scrollTop = terminalOutput.scrollHeight;
   terminalInput.focus();
 }
 
