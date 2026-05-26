@@ -7,13 +7,13 @@
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <div id="phase-cake" class="page phase-cake dark-room">
+  <div id="phase-cake" class="page phase-cake cinematic-blackout">
     <div class="cake-scene">
       <div class="cake-photo-frame">
-        <img class="cake-photo" src="cakeme.png" alt="Birthday cake with a lit candle" />
-        <button id="candle-hit-area" class="candle-hit-area" type="button" aria-label="Blow out the candle"></button>
+        <img class="cake-photo" src="cake-surprise.png" alt="Birthday cake with a lit candle" />
+        <button id="candle-hit-area" class="candle-hit-area" type="button" aria-label="Blow out the candle" disabled></button>
       </div>
-      <p class="cake-hint">Tap the candle flame</p>
+      <p id="cake-hint" class="cake-hint">Make a wish and tap the candle to blow it out...</p>
     </div>
   </div>
 
@@ -39,7 +39,7 @@
     </div>
   </section>
 
-  <audio id="background-music" src="background-music.mp3" preload="auto" loop></audio>
+  <audio id="background-music" src="background-music.mp3" preload="auto"></audio>
   <script src="script.js"></script>
 </body>
 </html>

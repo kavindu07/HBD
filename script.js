@@ -19,6 +19,7 @@ const candleHitArea = document.getElementById('candle-hit-area');
 const confettiLayer = document.getElementById('confetti-layer');
 const backgroundMusic = document.getElementById('background-music');
 const phaseMemories = document.getElementById('phase-memories');
+const cakeHint = document.getElementById('cake-hint');
 
 // Customize these values for your girlfriend.
 const validUsernames = ['1', 'baby'];
@@ -31,10 +32,14 @@ let phaseTwoStarted = false;
 let currentStep = 0;
 let countdownInterval = null;
 let candleBlown = false;
+let cakeSequenceStarted = false;
 let memorySlideIndex = 0;
 let memorySlideInterval = null;
 
 const heartProgressSteps = [33, 66, 100];
+const terminalGraceMs = 2500;
+const blackScreenHoldMs = 2000;
+const songTimelineMs = 18000;
 
 const terminalSteps = [
   {
@@ -223,9 +228,18 @@ async function handleStepInput(value) {
   const echo = appendTerminalLine(`> ${normalized}`, 'terminal-info');
   terminalInputRow.classList.add('hidden');
 
-  await delay(220);
+  const isValid = step.validate(normalized);
 
-  if (step.validate(normalized)) {
+  if (isValid) {
+    if (currentStep === terminalSteps.length - 1) {
+      updateHeartSync(heartProgressSteps[currentStep]);
+      currentStep += 1;
+      appendTerminalLine('[SUCCESS]: Database Decrypted. Access Granted...', 'terminal-success');
+      startCakeCinematicSequence();
+      return;
+    }
+
+    await delay(220);
     await typeLine(step.success, 28, 'terminal-success');
     updateHeartSync(heartProgressSteps[currentStep]);
     currentStep += 1;
@@ -233,15 +247,9 @@ async function handleStepInput(value) {
     if (currentStep < terminalSteps.length) {
       await delay(380);
       showInputPrompt();
-    } else {
-      await delay(900);
-      await typeLine('[SUCCESS]: Database Decrypted. Preparing GUI...', 30, 'terminal-success');
-      await delay(900);
-      appendTerminalLine('[READY]: Phase 3 interface will appear shortly.', 'terminal-success');
-      await delay(900);
-      window.location.href = 'surprise.html';
     }
   } else {
+    await delay(220);
     appendTerminalLine('[ERROR]: Access Denied. Try again.', 'terminal-error');
     await delay(360);
     terminalInputRow.classList.remove('hidden');
@@ -289,17 +297,69 @@ function createConfettiExplosion(count = 90) {
   }, 2200);
 }
 
-function playBackgroundMusic() {
-  if (!backgroundMusic) return;
+function startBirthdaySong() {
+  if (!backgroundMusic) return Promise.resolve();
 
+  backgroundMusic.currentTime = 0;
   backgroundMusic.volume = 0.72;
-  const playAttempt = backgroundMusic.play();
 
-  if (playAttempt) {
-    playAttempt.catch(() => {
+  const audioEnded = new Promise(resolve => {
+    const finish = () => {
+      backgroundMusic.removeEventListener('ended', finish);
+      backgroundMusic.removeEventListener('error', fail);
+      resolve();
+    };
+
+    const fail = () => {
+      backgroundMusic.removeEventListener('error', fail);
       console.warn('Add background-music.mp3 to enable music playback.');
-    });
-  }
+    };
+
+    backgroundMusic.addEventListener('ended', finish, { once: true });
+    backgroundMusic.addEventListener('error', fail, { once: true });
+
+    const playAttempt = backgroundMusic.play();
+    if (playAttempt) {
+      playAttempt.catch(fail);
+    }
+  });
+
+  return Promise.race([audioEnded, delay(songTimelineMs)]);
+}
+
+function unlockCandleInteraction() {
+  if (!phaseCake || !candleHitArea) return;
+
+  phaseCake.classList.add('ready-for-wish');
+  candleHitArea.removeAttribute('disabled');
+  cakeHint?.classList.add('visible');
+}
+
+async function startCakeCinematicSequence() {
+  if (cakeSequenceStarted || !phaseCake) return;
+  cakeSequenceStarted = true;
+
+  terminalInputRow?.classList.add('hidden');
+  phaseCake.classList.remove('hidden', 'image-revealed', 'ready-for-wish', 'fade-out', 'candle-blown');
+  phaseCake.classList.add('blackout-pending');
+  candleHitArea?.setAttribute('disabled', 'true');
+  cakeHint?.classList.remove('visible');
+
+  await delay(terminalGraceMs);
+
+  phaseCake.classList.remove('blackout-pending');
+  phaseCake.classList.add('blackout-active');
+  phaseTerminal?.classList.add('terminal-fade-away');
+  setTimeout(() => {
+    phaseTerminal?.classList.add('hidden');
+  }, 700);
+  const songFinished = startBirthdaySong();
+
+  await delay(blackScreenHoldMs);
+  phaseCake.classList.add('image-revealed');
+
+  await songFinished;
+  unlockCandleInteraction();
 }
 
 function startMemorySlides() {
@@ -322,7 +382,6 @@ async function handleCandleBlowout() {
   phaseCake.classList.add('candle-blown');
   candleHitArea?.setAttribute('disabled', 'true');
   createConfettiExplosion();
-  playBackgroundMusic();
 
   await delay(1800);
   phaseCake.classList.add('fade-out');
@@ -353,4 +412,8 @@ candleHitArea?.addEventListener('click', handleCandleBlowout);
 if (phaseCountdown) {
   updateCountdown();
   countdownInterval = setInterval(updateCountdown, 1000);
+}
+
+if (phaseCake && !phaseTerminal) {
+  startCakeCinematicSequence();
 }
