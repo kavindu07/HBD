@@ -32,6 +32,32 @@
         <span class="terminal-dot terminal-dot-green"></span>
       </div>
 
+      <div class="terminal-status">
+        <div class="heart-sync" id="heart-sync" style="--heart-progress: 0%;">
+          <svg class="heart-sync-svg" viewBox="0 0 120 108" role="img" aria-labelledby="heart-sync-title">
+            <title id="heart-sync-title">Love Sync decryption progress</title>
+            <defs>
+              <linearGradient id="heart-fill-gradient" x1="0" y1="1" x2="0" y2="0">
+                <stop offset="0%" stop-color="#ff174d" />
+                <stop offset="58%" stop-color="#ff3860" />
+                <stop offset="100%" stop-color="#ff8aa1" />
+              </linearGradient>
+              <clipPath id="heart-shape">
+                <path d="M60 101C36 78 12 59 12 34C12 17 25 7 40 7C49 7 56 12 60 20C64 12 71 7 80 7C95 7 108 17 108 34C108 59 84 78 60 101Z" />
+              </clipPath>
+            </defs>
+            <g clip-path="url(#heart-shape)">
+              <rect class="heart-sync-fill" x="0" y="0" width="120" height="108" />
+            </g>
+            <path class="heart-sync-outline" d="M60 101C36 78 12 59 12 34C12 17 25 7 40 7C49 7 56 12 60 20C64 12 71 7 80 7C95 7 108 17 108 34C108 59 84 78 60 101Z" />
+          </svg>
+          <div class="heart-sync-label">
+            <span>LOVE SYNC</span>
+            <strong id="heart-sync-value">0%</strong>
+          </div>
+        </div>
+      </div>
+
       <div class="terminal-content">
         <div id="terminal-output" class="terminal-output"></div>
         <div id="terminal-input-row" class="terminal-input-row hidden">

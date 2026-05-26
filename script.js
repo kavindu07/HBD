@@ -12,6 +12,8 @@ const phaseTerminal = document.getElementById('phase-terminal');
 const terminalOutput = document.getElementById('terminal-output');
 const terminalInputRow = document.getElementById('terminal-input-row');
 const terminalInput = document.getElementById('terminal-input');
+const heartSync = document.getElementById('heart-sync');
+const heartSyncValue = document.getElementById('heart-sync-value');
 
 // Customize these values for your girlfriend.
 const validUsernames = ['love', 'baby'];
@@ -23,6 +25,8 @@ const birthdayDay = 8;
 let phaseTwoStarted = false;
 let currentStep = 0;
 let countdownInterval = null;
+
+const heartProgressSteps = [33, 66, 100];
 
 const terminalSteps = [
   {
@@ -171,6 +175,19 @@ function showInputPrompt() {
   terminalInput.focus();
 }
 
+function updateHeartSync(progress) {
+  if (!heartSync || !heartSyncValue) return;
+
+  heartSync.style.setProperty('--heart-progress', `${progress}%`);
+  heartSyncValue.textContent = `${progress}%`;
+  heartSync.classList.toggle('complete', progress >= 100);
+  heartSync.classList.remove('sync-pulse');
+
+  requestAnimationFrame(() => {
+    heartSync.classList.add('sync-pulse');
+  });
+}
+
 async function handleStepInput(value) {
   const step = terminalSteps[currentStep];
   const normalized = value.trim();
@@ -189,13 +206,14 @@ async function handleStepInput(value) {
 
   if (step.validate(normalized)) {
     await typeLine(step.success, 28, 'terminal-success');
+    updateHeartSync(heartProgressSteps[currentStep]);
     currentStep += 1;
 
     if (currentStep < terminalSteps.length) {
       await delay(380);
       showInputPrompt();
     } else {
-      await delay(400);
+      await delay(900);
       await typeLine('[SUCCESS]: Database Decrypted. Preparing GUI...', 30, 'terminal-success');
       await delay(900);
       appendTerminalLine('[READY]: Phase 3 interface will appear shortly.', 'terminal-success');
