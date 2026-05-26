@@ -14,17 +14,25 @@ const terminalInputRow = document.getElementById('terminal-input-row');
 const terminalInput = document.getElementById('terminal-input');
 const heartSync = document.getElementById('heart-sync');
 const heartSyncValue = document.getElementById('heart-sync-value');
+const phaseCake = document.getElementById('phase-cake');
+const candleHitArea = document.getElementById('candle-hit-area');
+const confettiLayer = document.getElementById('confetti-layer');
+const backgroundMusic = document.getElementById('background-music');
+const phaseMemories = document.getElementById('phase-memories');
 
 // Customize these values for your girlfriend.
-const validUsernames = ['love', 'baby'];
-const expectedToken = '1506';
-const expectedYears = '4';
+const validUsernames = ['1', 'baby'];
+const expectedToken = '1';
+const expectedYears = '1';
 const birthdayMonth = 7;
 const birthdayDay = 8;
 
 let phaseTwoStarted = false;
 let currentStep = 0;
 let countdownInterval = null;
+let candleBlown = false;
+let memorySlideIndex = 0;
+let memorySlideInterval = null;
 
 const heartProgressSteps = [33, 66, 100];
 
@@ -37,7 +45,7 @@ const terminalSteps = [
   },
   {
     label: 'Access Token',
-    prompt: 'Access Token (Your Birthday DDMM):',
+    prompt: 'Access Token :',
     validate: value => value === expectedToken,
     success: '[SUCCESS]: Access token accepted. Verifying security parameters.',
   },
@@ -90,6 +98,8 @@ function delay(ms) {
 }
 
 function createHeartRain(count = 20) {
+  if (!heartOverlay) return;
+
   heartOverlay.innerHTML = '';
 
   for (let i = 0; i < count; i += 1) {
@@ -228,6 +238,8 @@ async function handleStepInput(value) {
       await typeLine('[SUCCESS]: Database Decrypted. Preparing GUI...', 30, 'terminal-success');
       await delay(900);
       appendTerminalLine('[READY]: Phase 3 interface will appear shortly.', 'terminal-success');
+      await delay(900);
+      window.location.href = 'surprise.html';
     }
   } else {
     appendTerminalLine('[ERROR]: Access Denied. Try again.', 'terminal-error');
@@ -247,6 +259,83 @@ async function startTerminalSequence() {
   showInputPrompt();
 }
 
+function createConfettiExplosion(count = 90) {
+  if (!confettiLayer) return;
+
+  confettiLayer.innerHTML = '';
+  confettiLayer.classList.add('active');
+
+  for (let i = 0; i < count; i += 1) {
+    const confetti = document.createElement('span');
+    const angle = Math.random() * Math.PI * 2;
+    const distance = getRandomInt(140, 520);
+    const size = getRandomInt(6, 13);
+
+    confetti.className = 'confetti-piece';
+    confetti.style.setProperty('--x', `${Math.cos(angle) * distance}px`);
+    confetti.style.setProperty('--y', `${Math.sin(angle) * distance}px`);
+    confetti.style.setProperty('--spin', `${getRandomInt(-720, 720)}deg`);
+    confetti.style.setProperty('--hue', `${getRandomInt(0, 360)}`);
+    confetti.style.width = `${size}px`;
+    confetti.style.height = `${getRandomInt(8, 18)}px`;
+    confetti.style.animationDelay = `${getRandomInt(0, 160)}ms`;
+
+    confettiLayer.appendChild(confetti);
+  }
+
+  setTimeout(() => {
+    confettiLayer.classList.remove('active');
+    confettiLayer.innerHTML = '';
+  }, 2200);
+}
+
+function playBackgroundMusic() {
+  if (!backgroundMusic) return;
+
+  backgroundMusic.volume = 0.72;
+  const playAttempt = backgroundMusic.play();
+
+  if (playAttempt) {
+    playAttempt.catch(() => {
+      console.warn('Add background-music.mp3 to enable music playback.');
+    });
+  }
+}
+
+function startMemorySlides() {
+  if (!phaseMemories) return;
+
+  const slides = [...phaseMemories.querySelectorAll('.memory-slide')];
+  if (slides.length <= 1) return;
+
+  memorySlideInterval = setInterval(() => {
+    slides[memorySlideIndex].classList.remove('active');
+    memorySlideIndex = (memorySlideIndex + 1) % slides.length;
+    slides[memorySlideIndex].classList.add('active');
+  }, 3600);
+}
+
+async function handleCandleBlowout() {
+  if (candleBlown || !phaseCake) return;
+  candleBlown = true;
+
+  phaseCake.classList.add('candle-blown');
+  candleHitArea?.setAttribute('disabled', 'true');
+  createConfettiExplosion();
+  playBackgroundMusic();
+
+  await delay(1800);
+  phaseCake.classList.add('fade-out');
+  await delay(650);
+
+  phaseCake.classList.add('hidden');
+  phaseMemories?.classList.remove('hidden');
+  requestAnimationFrame(() => {
+    phaseMemories?.classList.add('visible');
+  });
+  startMemorySlides();
+}
+
 skipButton?.addEventListener('click', () => {
   startPhaseTwoTransition();
 });
@@ -259,5 +348,9 @@ terminalInput?.addEventListener('keydown', async event => {
   await handleStepInput(value);
 });
 
-updateCountdown();
-countdownInterval = setInterval(updateCountdown, 1000);
+candleHitArea?.addEventListener('click', handleCandleBlowout);
+
+if (phaseCountdown) {
+  updateCountdown();
+  countdownInterval = setInterval(updateCountdown, 1000);
+}

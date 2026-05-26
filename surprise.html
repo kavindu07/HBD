@@ -7,12 +7,39 @@
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <div class="page page-surprise">
-    <div class="content">
-      <h1>Happy Birthday!</h1>
-      <p class="subtitle">The countdown is over — your surprise is here.</p>
-      <p class="hint">Open your gift, enjoy your day, and smile. ❤️</p>
+  <div id="phase-cake" class="page phase-cake dark-room">
+    <div class="cake-scene">
+      <div class="cake-photo-frame">
+        <img class="cake-photo" src="cakeme.png" alt="Birthday cake with a lit candle" />
+        <button id="candle-hit-area" class="candle-hit-area" type="button" aria-label="Blow out the candle"></button>
+      </div>
+      <p class="cake-hint">Tap the candle flame</p>
     </div>
   </div>
+
+  <div id="confetti-layer" class="confetti-layer" aria-hidden="true"></div>
+
+  <section id="phase-memories" class="page phase-memories hidden" aria-live="polite">
+    <div class="memory-slider">
+      <article class="memory-slide active">
+        <span>MEMORY 01</span>
+        <h1>Happy Birthday!</h1>
+        <p>The system is unlocked. The real surprise starts here.</p>
+      </article>
+      <article class="memory-slide">
+        <span>MEMORY 02</span>
+        <h1>Every Little Moment</h1>
+        <p>Some memories are too sweet to keep encrypted.</p>
+      </article>
+      <article class="memory-slide">
+        <span>MEMORY 03</span>
+        <h1>Forever Loading</h1>
+        <p>More love, more laughs, more us.</p>
+      </article>
+    </div>
+  </section>
+
+  <audio id="background-music" src="background-music.mp3" preload="auto" loop></audio>
+  <script src="script.js"></script>
 </body>
 </html>
