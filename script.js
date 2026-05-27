@@ -38,8 +38,8 @@ let memorySlideInterval = null;
 
 const heartProgressSteps = [33, 66, 100];
 const terminalGraceMs = 2500;
-const blackScreenHoldMs = 2000;
-const songTimelineMs = 18000;
+const terminalBlackoutFadeMs = 1500;
+const songTimelineMs = 78000;
 
 const terminalSteps = [
   {
@@ -312,7 +312,7 @@ function startBirthdaySong() {
 
     const fail = () => {
       backgroundMusic.removeEventListener('error', fail);
-      console.warn('Add background-music.mp3 to enable music playback.');
+      console.warn('Add bday-song.mp3 to enable music playback.');
     };
 
     backgroundMusic.addEventListener('ended', finish, { once: true });
@@ -340,6 +340,7 @@ async function startCakeCinematicSequence() {
   cakeSequenceStarted = true;
 
   terminalInputRow?.classList.add('hidden');
+  phaseTerminal?.classList.remove('terminal-fade-away');
   phaseCake.classList.remove('hidden', 'image-revealed', 'ready-for-wish', 'fade-out', 'candle-blown');
   phaseCake.classList.add('blackout-pending');
   candleHitArea?.setAttribute('disabled', 'true');
@@ -352,10 +353,9 @@ async function startCakeCinematicSequence() {
   phaseTerminal?.classList.add('terminal-fade-away');
   setTimeout(() => {
     phaseTerminal?.classList.add('hidden');
-  }, 700);
+  }, terminalBlackoutFadeMs);
   const songFinished = startBirthdaySong();
 
-  await delay(blackScreenHoldMs);
   phaseCake.classList.add('image-revealed');
 
   await songFinished;
