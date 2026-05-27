@@ -342,11 +342,83 @@ h1 {
   z-index: 20;
 }
 
-.phase-terminal.terminal-fade-away {
-  opacity: 0;
-  filter: blur(5px);
-  transform: translateY(0) scale(0.985);
-  transition: opacity 1.5s ease-in-out, filter 1.5s ease-in-out, transform 1.5s ease-in-out;
+.phase-terminal.terminal-dissolve {
+  z-index: 45;
+  background: #000000;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.phase-terminal.terminal-dissolve .terminal-shell {
+  overflow: hidden;
+  transform-origin: center center;
+  animation: hologramCollapse 1.5s ease-in-out forwards;
+  will-change: transform, opacity, filter, clip-path;
+}
+
+.phase-terminal.terminal-dissolve .terminal-content,
+.phase-terminal.terminal-dissolve .terminal-status,
+.phase-terminal.terminal-dissolve .terminal-header {
+  animation: hologramScanTear 0.16s steps(2, end) infinite;
+}
+
+@keyframes hologramCollapse {
+  0% {
+    opacity: 1;
+    filter: blur(0) brightness(1);
+    clip-path: inset(0 0 0 0);
+    transform: translate(0, 0) skewX(0deg) scale(1);
+  }
+  7% {
+    filter: blur(0.5px) brightness(1.2);
+    clip-path: inset(5% 0 8% 0);
+    transform: translate(2px, 0) skewX(1deg) scale(1);
+  }
+  15% {
+    opacity: 1;
+    filter: blur(1px) brightness(1.35);
+    clip-path: inset(0 0 0 0);
+    transform: translate(-2px, 0) skewX(-1.5deg) scale(1);
+  }
+  28% {
+    opacity: 0.9;
+    filter: blur(8px) brightness(1.5);
+    clip-path: inset(14% 0 19% 0);
+    transform: translate(2px, 0) skewX(1.2deg) scale(0.96, 0.84);
+  }
+  40% {
+    opacity: 0.78;
+    filter: blur(8px) brightness(1.5);
+    clip-path: inset(0 0 0 0);
+    transform: translate(-1px, 0) skewX(-0.7deg) scale(0.82, 0.48);
+  }
+  68% {
+    opacity: 0.42;
+    filter: blur(11px) brightness(1.7);
+    clip-path: inset(22% 0 22% 0);
+    transform: translate(0, 0) skewX(0deg) scale(0.28, 0.08);
+  }
+  100% {
+    opacity: 0;
+    filter: blur(14px) brightness(1.9);
+    clip-path: inset(50% 0 50% 0);
+    transform: translate(0, 0) scale(0.01, 0.01);
+  }
+}
+
+@keyframes hologramScanTear {
+  0% {
+    clip-path: inset(0 0 0 0);
+    transform: translateX(0);
+  }
+  50% {
+    clip-path: inset(8% 0 11% 0);
+    transform: translateX(2px);
+  }
+  100% {
+    clip-path: inset(0 0 0 0);
+    transform: translateX(-2px);
+  }
 }
 
 .phase-cake {

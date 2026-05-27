@@ -340,7 +340,7 @@ async function startCakeCinematicSequence() {
   cakeSequenceStarted = true;
 
   terminalInputRow?.classList.add('hidden');
-  phaseTerminal?.classList.remove('terminal-fade-away');
+  phaseTerminal?.classList.remove('terminal-dissolve');
   phaseCake.classList.remove('hidden', 'image-revealed', 'ready-for-wish', 'fade-out', 'candle-blown');
   phaseCake.classList.add('blackout-pending');
   candleHitArea?.setAttribute('disabled', 'true');
@@ -350,12 +350,13 @@ async function startCakeCinematicSequence() {
 
   phaseCake.classList.remove('blackout-pending');
   phaseCake.classList.add('blackout-active');
-  phaseTerminal?.classList.add('terminal-fade-away');
+  phaseTerminal?.classList.add('terminal-dissolve');
   setTimeout(() => {
     phaseTerminal?.classList.add('hidden');
   }, terminalBlackoutFadeMs);
   const songFinished = startBirthdaySong();
 
+  await delay(terminalBlackoutFadeMs);
   phaseCake.classList.add('image-revealed');
 
   await songFinished;
