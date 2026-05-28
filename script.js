@@ -33,6 +33,7 @@ let currentStep = 0;
 let countdownInterval = null;
 let candleBlown = false;
 let cakeSequenceStarted = false;
+let wrappingUnlocked = false;
 let memorySlideIndex = 0;
 let memorySlideInterval = null;
 
@@ -359,6 +360,94 @@ function getFinalTransitionOverlay() {
   return overlay;
 }
 
+function createBurnEmbers(container, originX = window.innerWidth / 2, originY = window.innerHeight / 2) {
+  const rect = container.getBoundingClientRect();
+  const localX = originX - rect.left;
+  const localY = originY - rect.top;
+
+  for (let i = 0; i < 34; i += 1) {
+    const ember = document.createElement('span');
+    const angle = Math.random() * Math.PI * 2;
+    const distance = getRandomInt(90, 360);
+    const size = getRandomInt(3, 8);
+
+    ember.className = 'burn-ember';
+    ember.style.left = `${localX}px`;
+    ember.style.top = `${localY}px`;
+    ember.style.width = `${size}px`;
+    ember.style.height = `${size}px`;
+    ember.style.setProperty('--x', `${Math.cos(angle) * distance}px`);
+    ember.style.setProperty('--y', `${Math.sin(angle) * distance - getRandomInt(40, 180)}px`);
+    ember.style.animationDelay = `${getRandomInt(0, 160)}ms`;
+
+    container.appendChild(ember);
+  }
+}
+
+function createVirtualWrappingShield() {
+  if (!phaseMemories) return null;
+
+  const existingShield = document.getElementById('virtual-wrapping-shield');
+  if (existingShield) existingShield.remove();
+
+  const shield = document.createElement('div');
+  shield.id = 'virtual-wrapping-shield';
+  shield.className = 'virtual-wrapping-shield';
+  shield.innerHTML = '<div class="wrapping-energy-text">Swipe to unwrap your gift</div>';
+
+  let startX = 0;
+  let startY = 0;
+
+  const burnOpen = event => {
+    if (wrappingUnlocked || shield.classList.contains('burning')) return;
+
+    wrappingUnlocked = true;
+    const point = event.changedTouches?.[0] || event;
+
+    shield.classList.add('burning');
+    createBurnEmbers(shield, point.clientX || window.innerWidth / 2, point.clientY || window.innerHeight / 2);
+
+    setTimeout(() => {
+      phaseMemories.classList.remove('wrapped');
+      phaseMemories.classList.add('unwrapped');
+      shield.remove();
+    }, 1800);
+  };
+
+  shield.addEventListener('touchstart', event => {
+    const touch = event.touches[0];
+    startX = touch.clientX;
+    startY = touch.clientY;
+  }, { passive: true });
+
+  shield.addEventListener('touchend', event => {
+    const touch = event.changedTouches[0];
+    const deltaX = Math.abs(touch.clientX - startX);
+    const deltaY = Math.abs(touch.clientY - startY);
+
+    if (deltaX > 45 || deltaY > 45) {
+      burnOpen(event);
+    }
+  }, { passive: true });
+
+  shield.addEventListener('pointerdown', event => {
+    startX = event.clientX;
+    startY = event.clientY;
+  });
+
+  shield.addEventListener('pointerup', event => {
+    const deltaX = Math.abs(event.clientX - startX);
+    const deltaY = Math.abs(event.clientY - startY);
+
+    if (deltaX > 45 || deltaY > 45) {
+      burnOpen(event);
+    }
+  });
+
+  phaseMemories.appendChild(shield);
+  return shield;
+}
+
 function startBirthdaySong() {
   if (!backgroundMusic) return Promise.resolve();
 
@@ -457,6 +546,10 @@ async function handleCandleBlowout() {
 
   phaseCake.classList.add('hidden');
   phaseMemories?.classList.remove('hidden');
+  phaseMemories?.classList.remove('unwrapped');
+  phaseMemories?.classList.add('wrapped');
+  wrappingUnlocked = false;
+  createVirtualWrappingShield();
   phaseMemories?.classList.add('visible');
   requestAnimationFrame(() => {
     finalOverlay.classList.remove('visible');
