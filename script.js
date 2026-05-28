@@ -40,6 +40,8 @@ const heartProgressSteps = [33, 66, 100];
 const terminalGraceMs = 2500;
 const terminalBlackoutFadeMs = 1500;
 const songTimelineMs = 78000;
+const magicalSparkleMs = 4000;
+const finalBlackFadeMs = 1500;
 
 const terminalSteps = [
   {
@@ -267,34 +269,94 @@ async function startTerminalSequence() {
   showInputPrompt();
 }
 
-function createConfettiExplosion(count = 90) {
+function getCandleFlamePoint() {
+  if (!candleHitArea) {
+    return {
+      x: window.innerWidth / 2,
+      y: window.innerHeight * 0.62,
+    };
+  }
+
+  const rect = candleHitArea.getBoundingClientRect();
+
+  return {
+    x: rect.left + rect.width / 2,
+    y: rect.top + rect.height * 0.18,
+  };
+}
+
+function createMagicalBlowoutEffect() {
   if (!confettiLayer) return;
 
   confettiLayer.innerHTML = '';
-  confettiLayer.classList.add('active');
+  confettiLayer.classList.add('active', 'magical-active');
 
-  for (let i = 0; i < count; i += 1) {
-    const confetti = document.createElement('span');
+  const flamePoint = getCandleFlamePoint();
+  const flash = document.createElement('span');
+  const vignette = document.createElement('span');
+  const smoke = document.createElement('span');
+
+  flash.className = 'magic-flash';
+  vignette.className = 'magic-vignette';
+  smoke.className = 'ember-smoke';
+  smoke.style.left = `${flamePoint.x}px`;
+  smoke.style.top = `${flamePoint.y}px`;
+
+  confettiLayer.append(flash, vignette, smoke);
+
+  for (let i = 0; i < 28; i += 1) {
+    const spark = document.createElement('span');
     const angle = Math.random() * Math.PI * 2;
-    const distance = getRandomInt(140, 520);
-    const size = getRandomInt(6, 13);
+    const distance = getRandomInt(58, 190);
+    const upwardLift = getRandomInt(22, 86);
+    const size = getRandomInt(3, 7);
 
-    confetti.className = 'confetti-piece';
-    confetti.style.setProperty('--x', `${Math.cos(angle) * distance}px`);
-    confetti.style.setProperty('--y', `${Math.sin(angle) * distance}px`);
-    confetti.style.setProperty('--spin', `${getRandomInt(-720, 720)}deg`);
-    confetti.style.setProperty('--hue', `${getRandomInt(0, 360)}`);
-    confetti.style.width = `${size}px`;
-    confetti.style.height = `${getRandomInt(8, 18)}px`;
-    confetti.style.animationDelay = `${getRandomInt(0, 160)}ms`;
+    spark.className = 'gold-spark';
+    spark.style.left = `${flamePoint.x}px`;
+    spark.style.top = `${flamePoint.y}px`;
+    spark.style.width = `${size}px`;
+    spark.style.height = `${size}px`;
+    spark.style.setProperty('--x', `${Math.cos(angle) * distance}px`);
+    spark.style.setProperty('--y', `${Math.sin(angle) * distance - upwardLift}px`);
+    spark.style.animationDelay = `${getRandomInt(0, 80)}ms`;
 
-    confettiLayer.appendChild(confetti);
+    confettiLayer.appendChild(spark);
+  }
+
+  for (let i = 0; i < 14; i += 1) {
+    const firefly = document.createElement('span');
+    const size = getRandomInt(9, 18);
+
+    firefly.className = 'firefly-orb';
+    firefly.style.left = `${getRandomInt(8, 92)}vw`;
+    firefly.style.bottom = `${getRandomInt(-18, 16)}vh`;
+    firefly.style.width = `${size}px`;
+    firefly.style.height = `${size}px`;
+    firefly.style.setProperty('--drift-x', `${getRandomInt(-55, 55)}px`);
+    firefly.style.setProperty('--rise', `${getRandomInt(72, 118)}vh`);
+    firefly.style.animationDelay = `${getRandomInt(250, 1400)}ms`;
+    firefly.style.animationDuration = `${getRandomInt(3600, 5400)}ms`;
+
+    confettiLayer.appendChild(firefly);
   }
 
   setTimeout(() => {
-    confettiLayer.classList.remove('active');
+    confettiLayer.classList.remove('active', 'magical-active');
     confettiLayer.innerHTML = '';
-  }, 2200);
+  }, 6200);
+}
+
+function getFinalTransitionOverlay() {
+  let overlay = document.getElementById('final-transition-overlay');
+
+  if (!overlay) {
+    overlay = document.createElement('div');
+    overlay.id = 'final-transition-overlay';
+    overlay.className = 'final-transition-overlay';
+    document.body.appendChild(overlay);
+  }
+
+  return overlay;
 }
 
 function startBirthdaySong() {
@@ -382,17 +444,28 @@ async function handleCandleBlowout() {
 
   phaseCake.classList.add('candle-blown');
   candleHitArea?.setAttribute('disabled', 'true');
-  createConfettiExplosion();
+  createMagicalBlowoutEffect();
 
-  await delay(1800);
-  phaseCake.classList.add('fade-out');
-  await delay(650);
+  await delay(magicalSparkleMs);
+
+  const finalOverlay = getFinalTransitionOverlay();
+  requestAnimationFrame(() => {
+    finalOverlay.classList.add('visible');
+  });
+
+  await delay(finalBlackFadeMs);
 
   phaseCake.classList.add('hidden');
   phaseMemories?.classList.remove('hidden');
+  phaseMemories?.classList.add('visible');
   requestAnimationFrame(() => {
-    phaseMemories?.classList.add('visible');
+    finalOverlay.classList.remove('visible');
   });
+
+  setTimeout(() => {
+    finalOverlay.remove();
+  }, finalBlackFadeMs + 150);
+
   startMemorySlides();
 }
 
