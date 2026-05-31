@@ -20,6 +20,7 @@ const confettiLayer = document.getElementById('confetti-layer');
 const backgroundMusic = document.getElementById('background-music');
 const phaseMemories = document.getElementById('phase-memories');
 const cakeHint = document.getElementById('cake-hint');
+const giftBoxes = [...document.querySelectorAll('.gift-box')];
 
 // Customize these values for your girlfriend.
 const validUsernames = ['1', 'baby'];
@@ -43,6 +44,19 @@ const terminalBlackoutFadeMs = 1500;
 const songTimelineMs = 78000;
 const magicalSparkleMs = 4000;
 const finalBlackFadeMs = 1500;
+
+const giftRewards = [
+  {
+    title: 'You unlocked a Daytime Movie Date & Sweet Ride! (Sponsored by Kavindu) 🏍️🍿',
+  },
+  {
+    title: "You unlocked a 'Shopping Spree with Kavindu'! 🛍️✨",
+    subtitle: 'Pick a day, we are going shopping for whatever you want! ❤️',
+  },
+  {
+    title: "You unlocked a 'Free Hugs & Unlimited Ice Cream' coupon! 🍦❤️",
+  },
+];
 
 const terminalSteps = [
   {
@@ -527,6 +541,18 @@ function startMemorySlides() {
   }, 3600);
 }
 
+function openGiftBox(box) {
+  const reward = giftRewards[Number(box.dataset.giftIndex)];
+  const reveal = box.querySelector('.gift-reveal');
+  if (!reward || !reveal) return;
+
+  box.classList.add('opened');
+  box.setAttribute('aria-expanded', 'true');
+  reveal.innerHTML = reward.subtitle
+    ? `<strong>${reward.title}</strong><span>${reward.subtitle}</span>`
+    : `<strong>${reward.title}</strong>`;
+}
+
 async function handleCandleBlowout() {
   if (candleBlown || !phaseCake) return;
   candleBlown = true;
@@ -575,6 +601,10 @@ terminalInput?.addEventListener('keydown', async event => {
 });
 
 candleHitArea?.addEventListener('click', handleCandleBlowout);
+
+giftBoxes.forEach(box => {
+  box.addEventListener('click', () => openGiftBox(box));
+});
 
 if (phaseCountdown) {
   updateCountdown();
