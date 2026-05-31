@@ -23,9 +23,9 @@ const cakeHint = document.getElementById('cake-hint');
 const giftBoxes = [...document.querySelectorAll('.gift-box')];
 
 // Customize these values for your girlfriend.
-const validUsernames = ['1', 'baby'];
-const expectedToken = '1';
-const expectedYears = '1';
+const expectedName = 'nathasha';
+const expectedAnniversary = '11/18';
+const expectedBoyfriendName = 'kavindu';
 const birthdayMonth = 7;
 const birthdayDay = 8;
 
@@ -60,21 +60,24 @@ const giftRewards = [
 
 const terminalSteps = [
   {
-    label: 'Username',
-    prompt: 'Username:',
-    validate: value => validUsernames.includes(value.toLowerCase()),
-    success: '[SUCCESS]: Username confirmed. Initializing access token.',
+    label: 'Name',
+    prompt: 'Enter your name (One word answer):',
+    validate: value => value.toLowerCase() === expectedName,
+    error: 'Access Denied: Invalid Username. Try again.',
+    success: '[SUCCESS]: Name confirmed. Initializing memory check.',
   },
   {
-    label: 'Access Token',
-    prompt: 'Access Token :',
-    validate: value => value === expectedToken,
-    success: '[SUCCESS]: Access token accepted. Verifying security parameters.',
+    label: 'Anniversary',
+    prompt: 'Enter anniversary month and date (Example: 01/01):',
+    validate: value => value === expectedAnniversary,
+    error: 'Incorrect key date. Hint: MM/DD. Try again.',
+    success: '[SUCCESS]: Anniversary verified. Checking final identity parameter.',
   },
   {
-    label: 'Security Question',
-    prompt: 'Security Question: How many years has this system been operating smoothly?',
-    validate: value => value === expectedYears,
+    label: 'Boyfriend Name',
+    prompt: "Enter your boyfriend's name:",
+    validate: value => value.toLowerCase() === expectedBoyfriendName,
+    error: '❌ Error: කවුද යකෝ ඒ?! 🤨ගහනවා හරියට නම ⚔️👊❤️',
     success: '[SUCCESS]: Identity confirmed. Database decryption starting.',
   },
 ];
@@ -267,10 +270,9 @@ async function handleStepInput(value) {
     }
   } else {
     await delay(220);
-    appendTerminalLine('[ERROR]: Access Denied. Try again.', 'terminal-error');
+    await typeLine(step.error, 24, 'terminal-error');
     await delay(360);
-    terminalInputRow.classList.remove('hidden');
-    terminalInput.focus();
+    showInputPrompt();
   }
 }
 
