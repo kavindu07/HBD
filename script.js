@@ -28,7 +28,7 @@ const downloadCardButton = document.getElementById('download-card-btn');
 const expectedName = 'nathasha';
 const expectedAnniversary = '11/18';
 const expectedBoyfriendName = 'kavindu';
-const targetDate = new Date(2026, 6, 8, 0, 0, 0, 0);
+const targetDate = new Date(2026, 5, 2, 0, 0, 0, 0);
 
 let phaseTwoStarted = false;
 let currentStep = 0;
