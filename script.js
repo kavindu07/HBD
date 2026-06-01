@@ -1,12 +1,12 @@
-const countdownElement = {
+﻿const countdownElement = {
   days: document.getElementById('days'),
   hours: document.getElementById('hours'),
   minutes: document.getElementById('minutes'),
   seconds: document.getElementById('seconds'),
 };
 
+const countdownContainer = document.getElementById('countdown');
 const phaseCountdown = document.getElementById('phase-countdown');
-const skipButton = document.getElementById('skip-button');
 const heartOverlay = document.getElementById('heart-rain');
 const phaseTerminal = document.getElementById('phase-terminal');
 const terminalOutput = document.getElementById('terminal-output');
@@ -21,13 +21,14 @@ const backgroundMusic = document.getElementById('background-music');
 const phaseMemories = document.getElementById('phase-memories');
 const cakeHint = document.getElementById('cake-hint');
 const giftBoxes = [...document.querySelectorAll('.gift-box')];
+const birthdayCard = document.getElementById('birthday-card');
+const downloadCardButton = document.getElementById('download-card-btn');
 
 // Customize these values for your girlfriend.
 const expectedName = 'nathasha';
 const expectedAnniversary = '11/18';
 const expectedBoyfriendName = 'kavindu';
-const birthdayMonth = 7;
-const birthdayDay = 8;
+const targetDate = new Date(2026, 6, 8, 0, 0, 0, 0);
 
 let phaseTwoStarted = false;
 let currentStep = 0;
@@ -47,14 +48,14 @@ const finalBlackFadeMs = 1500;
 
 const giftRewards = [
   {
-    title: 'You unlocked a Daytime Movie Date & Sweet Ride! (Sponsored by Kavindu) 🏍️🍿',
+    title: 'A Movie date + Unlimited Hugs 🍿❤️',
   },
   {
-    title: "You unlocked a 'Shopping Spree with Kavindu'! 🛍️✨",
-    subtitle: 'Pick a day, we are going shopping for whatever you want! ❤️',
+    title: "You unlocked a 'Shopping Spree with Kavindu'! 🛍️👗👙",
+    subtitle: 'Pick a day, we are going shopping together!',
   },
   {
-    title: "You unlocked a 'Free Hugs & Unlimited Ice Cream' coupon! 🍦❤️",
+    title: 'A lovely afternoon getaway just for us at a beautiful room stay! 🏨☀️✨',
   },
 ];
 
@@ -82,28 +83,27 @@ const terminalSteps = [
   },
 ];
 
-function getNextBirthdayMonthDay(month, day) {
-  const now = new Date();
-  const currentYear = now.getFullYear();
-  const thisYearBirthday = new Date(currentYear, month - 1, day, 0, 0, 0, 0);
-
-  return thisYearBirthday <= now
-    ? new Date(currentYear + 1, month - 1, day, 0, 0, 0, 0)
-    : thisYearBirthday;
-}
-
-const targetDate = getNextBirthdayMonthDay(birthdayMonth, birthdayDay);
 
 function getRandomInt(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
+function isPastTargetDate(now = new Date()) {
+  return now >= targetDate;
+}
+
+function startTargetReachedFlow() {
+  countdownContainer?.setAttribute('hidden', '');
+  countdownContainer?.setAttribute('aria-hidden', 'true');
+
+  startPhaseTwoTransition();
+}
 function updateCountdown() {
   const now = new Date();
   const diff = targetDate - now;
 
   if (diff <= 0) {
-    startPhaseTwoTransition();
+    startTargetReachedFlow();
     return;
   }
 
@@ -590,10 +590,6 @@ async function handleCandleBlowout() {
   startMemorySlides();
 }
 
-skipButton?.addEventListener('click', () => {
-  startPhaseTwoTransition();
-});
-
 terminalInput?.addEventListener('keydown', async event => {
   if (event.key !== 'Enter') return;
   event.preventDefault();
@@ -608,11 +604,39 @@ giftBoxes.forEach(box => {
   box.addEventListener('click', () => openGiftBox(box));
 });
 
+downloadCardButton?.addEventListener('click', async () => {
+  if (!birthdayCard || typeof html2canvas === 'undefined') return;
+
+  downloadCardButton.disabled = true;
+  downloadCardButton.textContent = 'Preparing your card...';
+
+  try {
+    const canvas = await html2canvas(birthdayCard, {
+      useCORS: true,
+      scale: 2,
+      backgroundColor: null,
+    });
+    const link = document.createElement('a');
+    link.download = 'Nathashas_Bday_Card.png';
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+  } finally {
+    downloadCardButton.disabled = false;
+    downloadCardButton.textContent = 'Save My Birthday Card 📸';
+  }
+});
+
 if (phaseCountdown) {
-  updateCountdown();
-  countdownInterval = setInterval(updateCountdown, 1000);
+  if (isPastTargetDate()) {
+    startTargetReachedFlow();
+  } else {
+    updateCountdown();
+    countdownInterval = setInterval(updateCountdown, 1000);
+  }
 }
 
 if (phaseCake && !phaseTerminal) {
   startCakeCinematicSequence();
 }
+
+

@@ -96,27 +96,6 @@ h1 {
   letter-spacing: 0.05em;
 }
 
-.skip-button {
-  margin: 0 auto 1.5rem;
-  padding: 0.95rem 1.6rem;
-  border: none;
-  border-radius: 999px;
-  background: linear-gradient(135deg, #f472b6, #fb7185);
-  color: #fff;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: transform 0.24s ease, box-shadow 0.24s ease, opacity 0.24s ease;
-}
-
-.skip-button:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 18px 35px rgba(251, 113, 133, 0.25);
-}
-
-.skip-button:active {
-  transform: translateY(0);
-}
-
 .page-countdown.system-breach {
   overflow: hidden;
   animation: system-glitch 3s steps(2, end) both;
@@ -1014,6 +993,105 @@ h1 {
   transform: translateY(0) scale(1);
 }
 
+.wish-card-section {
+  display: grid;
+  justify-items: center;
+  gap: 1.2rem;
+  padding: 2.4rem 0 0;
+}
+
+#birthday-card {
+  width: 350px;
+  aspect-ratio: 9 / 16;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.45rem;
+  border: 1px solid rgba(255, 215, 0, 0.82);
+  border-radius: 16px;
+  background:
+    radial-gradient(circle at 50% 12%, rgba(255, 215, 0, 0.13), transparent 9rem),
+    linear-gradient(180deg, #3a0d19 0%, #15050b 48%, #090307 100%);
+  color: #fff7f2;
+  box-shadow:
+    0 0 0 1px rgba(255, 238, 166, 0.18),
+    0 0 28px rgba(255, 215, 0, 0.22),
+    inset 0 0 42px rgba(255, 215, 0, 0.08);
+  overflow: hidden;
+}
+
+.card-title {
+  margin: 0;
+  color: #fff5d7;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 1.55rem;
+  line-height: 1.18;
+  letter-spacing: 0;
+  text-align: center;
+  text-shadow: 0 0 18px rgba(255, 215, 0, 0.32);
+}
+
+.card-image-wrapper {
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  border: 1px solid rgba(255, 238, 166, 0.35);
+  border-radius: 14px;
+  overflow: hidden;
+  background: #12080b;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.34);
+}
+
+.card-photo {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center center;
+}
+
+.card-message {
+  margin: 0;
+  color: rgba(255, 249, 237, 0.9);
+  font-size: 0.98rem;
+  line-height: 1.55;
+  text-align: center;
+}
+
+.card-signature {
+  color: #ffd700;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 1.05rem;
+  font-weight: 700;
+  text-align: center;
+  text-shadow: 0 0 14px rgba(255, 215, 0, 0.4);
+}
+
+.premium-btn {
+  border: 1px solid rgba(255, 215, 0, 0.56);
+  border-radius: 999px;
+  background: linear-gradient(135deg, rgba(255, 215, 0, 0.95), rgba(255, 146, 94, 0.92));
+  color: #21080d;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 800;
+  padding: 0.95rem 1.35rem;
+  box-shadow: 0 18px 42px rgba(255, 174, 0, 0.22), 0 0 22px rgba(255, 215, 0, 0.2);
+  transition: transform 0.22s ease, box-shadow 0.22s ease, filter 0.22s ease;
+}
+
+.premium-btn:hover,
+.premium-btn:focus-visible {
+  filter: brightness(1.05);
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 22px 52px rgba(255, 174, 0, 0.3), 0 0 30px rgba(255, 215, 0, 0.28);
+}
+
+.premium-btn:active {
+  transform: translateY(0) scale(0.98);
+}
+
 .memory-slider {
   position: relative;
   width: min(90vw, 760px);
@@ -1541,6 +1619,18 @@ h1 {
 
   .gift-box {
     min-height: 8.5rem;
+  }
+
+  #birthday-card {
+    width: min(350px, 88vw);
+  }
+
+  .card-title {
+    font-size: clamp(1.25rem, 6vw, 1.55rem);
+  }
+
+  .card-message {
+    font-size: clamp(0.86rem, 4vw, 0.98rem);
   }
 }
 

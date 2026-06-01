@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Birthday Countdown</title>
   <link rel="stylesheet" href="styles.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
 <body>
   <div id="phase-countdown" class="page page-countdown">
@@ -17,7 +18,6 @@
         <div><span id="minutes">00</span><small>Minutes</small></div>
         <div><span id="seconds">00</span><small>Seconds</small></div>
       </div>
-      <button class="skip-button" id="skip-button" type="button">Skip to terminal</button>
       <p class="hint">When the clock hits midnight, the encrypted terminal will appear.</p>
     </div>
   </div>
@@ -114,6 +114,19 @@
           <span class="gift-label">Gift 03</span>
           <span class="gift-reveal" aria-live="polite"></span>
         </button>
+      </div>
+      <div class="wish-card-section">
+        <div id="birthday-card">
+          <h2 class="card-title">Happy 22nd Birthday,Sudu Nona! 🎂✨</h2>
+          <div class="card-image-wrapper">
+            <img src="img1.jpg" alt="Our Memory" class="card-photo">
+          </div>
+          <p class="card-message">
+            May your days be filled with love, laughter, and endless smiles. Thank you for being my world and my everything for 3 beautiful years and counting... ❤️
+          </p>
+          <div class="card-signature">With love, Your Kavindu ⚔️❤️</div>
+        </div>
+        <button id="download-card-btn" class="premium-btn">Save My Birthday Card 📸</button>
       </div>
     </article>
   </section>
